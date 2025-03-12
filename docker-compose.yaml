@@ -1,0 +1,39 @@
+services:
+  db:
+    container_name: helpdesk-js-db
+    image: postgres:17.2-alpine3.21
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    networks:
+      - app-network
+
+  app:
+    container_name: helpdesk-js-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      # DB_URL: postgress://${MYSQL_USER}:${MYSQL_PASSWORD}@db:6432/${MYSQL_DATABASE}
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+# volumes:
+#   db-data:
+
+networks:
+  app-network:
+    driver: bridge
