@@ -3,14 +3,15 @@ import todoRouter from './feature/todo/todo.controller';
 import { AppDataSource } from './app/db/db';
 import { errorHandler } from './app/middlewares/errorHandler';
 
-// rul
-// грейсфул, валидация, контроллер - сервис (хелперы) - репо (энтити)
-// классы см пм-монитор-сервис?
-// валидация?
-// тесты?
+/*
+  Приложение написано в функциональном стиле.
+  Можно еще писать на epxress на калссах - но тут маленькое приложение.
+*/
+
 AppDataSource.initialize().catch((error) => console.log(error));
 
 const app = express();
+
 app.use(express.json());
 app.use('/todo', todoRouter);
 app.use(errorHandler);

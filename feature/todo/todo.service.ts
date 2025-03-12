@@ -2,28 +2,8 @@ import { UpdateResult } from "typeorm/query-builder/result/UpdateResult";
 import { Todo, TodoStatusE } from "./todo.entity";
 import { getTodosDb, createTodoDb, updateTodoDb, cancellAllTodoDb } from "./todo.repo"
 import { Request } from 'express';
+import { validateDate } from "./todo.helper";
 
-function validateDate(date: string): boolean {
-  try {
-    const nums: string[] = date.split(".");
-    const chars: string[] = date.split("");
-
-    if (
-      date.length !== 10
-      || chars.filter(char => char === ".").length !== 2
-      || nums.length !== 3
-      || nums[0].length !== 2 || nums[1].length !== 2 || nums[2].length !== 4
-    ) {
-      return false;
-    }
-  } catch (e) {
-    return false;
-  }
-
-  return true;
-}
-
-// todo validate all
 export const createTodo = async (req: Request) => {
   const title: string = req.body.title;
   const text: string = req.body.text;
@@ -55,13 +35,11 @@ export async function getTodos(req: Request): Promise<Todo[] | undefined> {
 export async function updateTodo(req: Request): Promise<number> {
   const id: string | undefined = req.body.id;
   if (!id) {
-    throw new Error("id wasnot provided");
+    throw new Error("id was not provided");
   }
 
   const status: TodoStatusE | undefined = req.body.status;
   const note: string | undefined = req.body.note;
-
-  // сделатл проверки статусов ?
 
   return (await updateTodoDb(id, status, note)).affected ?? 0; 
 }
